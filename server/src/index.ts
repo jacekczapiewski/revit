@@ -1,30 +1,24 @@
+import { PrismaClient } from '@prisma/client';
 import { ApolloServer, gql } from 'apollo-server';
 
-const typeDefs = gql`
-  type Book {
-    title: String
-    author: String
-  }
+const prisma = new PrismaClient();
 
+const typeDefs = gql`
+  type User {
+    id: String!
+    email: String!
+    name: String
+  }
   type Query {
-    books: [Book]
+    allUsers: [User!]!
   }
 `;
 
-const books = [
-    {
-      title: 'The Awakening',
-      author: 'Kate Chopin',
-    },
-    {
-      title: 'City of Glass',
-      author: 'Paul Auster',
-    },
-  ];
-
 const resolvers = {
     Query: {
-        books: () => books
+        allUsers: () => {
+          return prisma.user.findMany();
+        }
     }
 };
 
